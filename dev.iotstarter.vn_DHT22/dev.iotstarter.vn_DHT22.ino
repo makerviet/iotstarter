@@ -10,7 +10,11 @@
 
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
-
+#include <SimpleTimer.h>
+#include <DHT.h>
+#define DHTPIN 02 //pin gpio 02 - D4 in NodeMCU 12E in sensor
+#define DHTTYPE DHT22   // DHT 22 Change this if you have a DHT11
+DHT dht(DHTPIN, DHTTYPE);
 // Thông tin Wifi
 const char* ssid = "Maker Ha Noi";
 const char* password = "makerhanoi123";
@@ -19,10 +23,10 @@ const char* mqtt_server = "dev.iotstarter.vn"; // Thông tin MQTT Broker Maker H
 
 // Thông tin tin clientID, publishing, subcribing topic. ClientID nên là duy nhất trong tất cả các ứng dụng
 // Thay đổi thông tin ở đây tương ứng với thông tin các bạn muốn
-const char* clientID = "698ed4c6-dcbf-4bc8-9d53-da66a4f1ab83";
+const char* clientID = "b3098a8f-ce26-40a6-8ea5-761f30531c1e";
 
-const char* outTopic = "public/esp/698ed4c6-dcbf-4bc8-9d53-da66a4f1ab83/device_out";
-const char* inTopic = "public/esp/698ed4c6-dcbf-4bc8-9d53-da66a4f1ab83/device_in";
+const char* outTopic = "public/esp/b3098a8f-ce26-40a6-8ea5-761f30531c1e/device_out";
+const char* inTopic = "public/esp/b3098a8f-ce26-40a6-8ea5-761f30531c1e/device_in";
 
 // Generally, you should use "unsigned long" for variables that hold time
 unsigned long previousMillis = 0;        // will store last temp was read
@@ -86,10 +90,15 @@ void reconnect() {
 }
 
 void publishValue() {
-  count++;
-  dtostrf(count, 2, 2, msg);
+//  count++;
+//  dtostrf(count, 2, 2, msg);
+  float h = dht.readHumidity();
+//  Serial.println(h);
+  float t = dht.readTemperature();
+  
   Serial.println(msg);
-  dtostrf(analogRead(A0), 2, 2, msg);
+  //  dtostrf(analogRead(A0), 2, 2, msg);
+  dtostrf(t, 2, 2, msg);
   Serial.println(msg);
   client.publish(outTopic, msg);
   delay(2000);

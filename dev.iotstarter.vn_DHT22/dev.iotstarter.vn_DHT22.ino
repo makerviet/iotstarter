@@ -36,6 +36,7 @@ WiFiClient espClient;
 PubSubClient client(espClient);
 char msg[50];
 int count = 0;
+String send_str;
 
 // Hàm kết nối Wifi
 void setup_wifi() {
@@ -95,11 +96,17 @@ void publishValue() {
   float h = dht.readHumidity();
 //  Serial.println(h);
   float t = dht.readTemperature();
-  
-  Serial.println(msg);
-  //  dtostrf(analogRead(A0), 2, 2, msg);
   dtostrf(t, 2, 2, msg);
+//   tmp_str = msg;
+  // Format du lieu: "D0;D1;..;D10;A0"
+  send_str = "";
+  for (int i = 0; i <= 10; i++) {
+    send_str+="0;";
+    // send_str+= digitalReaad(0).toChar();
+  }
+  send_str += msg;
   Serial.println(msg);
+  send_str.toCharArray(msg, 50);
   client.publish(outTopic, msg);
   delay(2000);
 }

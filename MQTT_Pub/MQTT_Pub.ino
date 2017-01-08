@@ -19,15 +19,14 @@ const char* mqtt_server = "54.254.167.51"; // Thông tin MQTT Broker Maker Hanoi
 
 // Thông tin tin clientID, publishing, subcribing topic. ClientID nên là duy nhất trong tất cả các ứng dụng
 // Thay đổi thông tin ở đây tương ứng với thông tin các bạn muốn
-const char* clientID = "698ed4c6-dcbf-4bc8-9d53-da66a4f1ab83";
+const char* clientID = "1309b99e-3700-4b32-a91c-2f884d61f355";
 
-const char* outTopic = "public/esp/698ed4c6-dcbf-4bc8-9d53-da66a4f1ab83/device_out";
-const char* inTopic = "public/esp/1309b99e-3700-4b32-a91c-2f884d61f355/device_out";
+const char* outTopic = "public/esp/1309b99e-3700-4b32-a91c-2f884d61f355/device_out";
+const char* inTopic = "public/esp/1309b99e-3700-4b32-a91c-2f884d61f355/device_in";
 
 // Generally, you should use "unsigned long" for variables that hold time
 unsigned long previousMillis = 0;        // will store last temp was read
 const long interval = 2000;              // interval at which to read sensor
-const int threshold = 600;
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -54,27 +53,13 @@ void setup_wifi() {
   Serial.println("WiFi connected");
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
-  pinMode(D2, OUTPUT);
 }
 
 // Hàm call back được gọi khi nhận được thông tin từ subcribing topic
 // Trong ứng dụng demo này thì chưa xử lý gì thông tin nhận được
 void callback(char* topic, byte* payload, unsigned int length) {
-  // xử lý dữ liệu nhận được
-  /*
-   * convert string to int giá trị cường độ sáng
-   * if/else điều khiển bật tắt relay dựa trên ngưỡng
-  */
-  char* message = (char*) payload;
-  int value = atoi(message);
-  Serial.println(value);
-  if (value > threshold) {
-      digitalWrite(D2, HIGH);
-      Serial.println("HIGH");
-  } else {
-    digitalWrite(D2, LOW);
-    Serial.println("LOW");
-  }
+  // do nothing here
+  
 }
 
 // Reconnect đến MQTT Broker
@@ -105,6 +90,7 @@ void publishValue() {
   dtostrf(count, 2, 2, msg);
   Serial.println(msg);
   dtostrf(analogRead(A0), 2, 2, msg);
+  String msg_str = msg;
   Serial.println(msg);
   client.publish(outTopic, msg);
   delay(2000);
@@ -121,7 +107,7 @@ void loop() {
   if (!client.connected()) {
     reconnect();
   }
-//  publishValue();
+  publishValue();
   client.loop();
 }
 

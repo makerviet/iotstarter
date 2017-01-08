@@ -19,10 +19,10 @@ const char* mqtt_server = "54.254.167.51"; // Thông tin MQTT Broker Maker Hanoi
 
 // Thông tin tin clientID, publishing, subcribing topic. ClientID nên là duy nhất trong tất cả các ứng dụng
 // Thay đổi thông tin ở đây tương ứng với thông tin các bạn muốn
-const char* clientID = "698ed4c6-dcbf-4bc8-9d53-da66a4f1ab83";
+const char* clientID = "1309b99e-3700-4b32-a91c-2f884d61f355";
 
-const char* outTopic = "public/esp/698ed4c6-dcbf-4bc8-9d53-da66a4f1ab83/device_out";
-const char* inTopic = "public/esp/698ed4c6-dcbf-4bc8-9d53-da66a4f1ab83/device_in";
+const char* outTopic = "public/esp/1309b99e-3700-4b32-a91c-2f884d61f355/device_out";
+const char* inTopic = "public/esp/1309b99e-3700-4b32-a91c-2f884d61f355/device_in";
 
 // Generally, you should use "unsigned long" for variables that hold time
 unsigned long previousMillis = 0;        // will store last temp was read
@@ -90,6 +90,7 @@ void publishValue() {
   dtostrf(count, 2, 2, msg);
   Serial.println(msg);
   dtostrf(analogRead(A0), 2, 2, msg);
+  String msg_str = msg;
   Serial.println(msg);
   client.publish(outTopic, msg);
   delay(2000);
